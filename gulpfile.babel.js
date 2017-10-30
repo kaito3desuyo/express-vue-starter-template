@@ -2,19 +2,10 @@ import gulp from 'gulp';
 import webpackStream from 'webpack-stream';
 import webpack from 'webpack';
 import webpackConfig from './webpack.config';
-//import browserify from 'browserify';
-//import babelify from 'babelify';
-//import watchify from 'watchify';
-//import buffer from 'vinyl-buffer';
-//import source from 'vinyl-source-stream';
 import browserSync from 'browser-sync';
 import gulpLoadPlugins from 'gulp-load-plugins';
 import runSequence from 'run-sequence';
 import named from 'vinyl-named';
-//import browserify from 'browserify';
-//import source from 'vinyl-source-stream';
-//import vueify from 'vueify';
-//import path from 'path';
 
 const $ = gulpLoadPlugins();
 
@@ -53,6 +44,7 @@ gulp.task('route-js', () => {
 	], {
 		base: './src'
 	})
+	.pipe($.plumber())
 	//.pipe(named())
 	//.pipe(webpackStream(webpackConfig))
 	.pipe(gulp.dest('./dist'));
@@ -65,6 +57,7 @@ gulp.task('view-ejs', () => {
 	], {
 		base: './src'
 	})
+	.pipe($.plumber())
 	.pipe(gulp.dest('./dist'));
 });
 
@@ -73,6 +66,7 @@ gulp.task('view-js', () => {
 	return gulp.src([
 		'./src/views/**/*.js',
 	])
+	.pipe($.plumber())
 	.pipe(named())
 	.pipe(webpackStream(webpackConfig))
 	.pipe(gulp.dest('./dist/views/javascripts'));
@@ -81,6 +75,7 @@ gulp.task('view-js', () => {
 //cssファイル
 gulp.task('css', () => {
   return gulp.src('public/**/*.css')
+	.pipe($.plumber())
     .pipe(browserSync.reload({ stream: true }));
 });
 
@@ -96,57 +91,3 @@ gulp.task('default', ['browser-sync'], () => {
 	gulp.watch('public/**/*.css',  ['css', browserSync.reload]);
 	gulp.watch('src/views/**/*.ejs', ['ejs', browserSync.reload]);
 });
-
-//ビルド
-gulp.task('build', () => {
-	
-	//ejsファイルを出力
-	gulp.src([
-			'./views/**/*.ejs'
-	], {
-		base: '.'
-	})
-	.pipe(gulp.dest('./dist'));
-	//vue.jsファイルをvueifyして出力
-	return webpackStream(webpackConfig, webpack)
-		.pipe(gulp.dest('dist/views'));
-	
-	//gulp.src([
-	//	'./views/**/*.js'
-	//], {
-	//	base: '.'
-	//})
-	//.pipe(browserified)
-	//.pipe(gulp.dest('./dist'));
-});
-
-//expressサーバを立ち上げて監視
-gulp.task('serve', ['browser-sync'], () => {
-	$.nodemon({
-		script: './bin/www',
-		watch: './src',
-		stdout: false
-	}).on('readable', () => {
-		this.stdout.on('data', (chunk) => {
-			if(/^Express\ server\ listening/.test(chunk)){
-				reload();
-			}
-			process.stdout.write(chunk);
-		});
-		this.stderr.on('data', (chunk) => {
-			process.stderr.write(chunk);
-		});
-	});
-});
-
-//監視
-//gulp.task('serve', ['nodemon', 'browser-sync'], () => {
-//	gulp.watch('public', ['bs-reload']);
-//	gulp.watch('src', (callback) => {
-//		return runSequence(
-//			'build',
-//			'nodemon',
-//			'bs-reload'
-//		);
-//	});
-//});
