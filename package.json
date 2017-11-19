@@ -1,7 +1,7 @@
 {
   "name": "your-project",
   "version": "1.0.0",
-  "description": "your description",
+  "description": "your description is here",
   "private": true,
   "main": "app.js",
   "scripts": {

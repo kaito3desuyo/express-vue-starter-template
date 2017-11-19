@@ -14,7 +14,7 @@ gulp.task('nodemon', (cb) => {
 	let called = false;
 	return $.nodemon({
 		script: './bin/www',
-		watch: ['app.js']
+		watch: ['app.js', './dist/routes/']
 	})
 	.on ('start', function onStart(){
 		if(!called){cb();}
@@ -85,9 +85,9 @@ gulp.task('bs-reload', () => {
 });
 
 gulp.task('default', ['browser-sync'], () => {
-	gulp.watch('src/routes/**/*.js', ['route-js', browserSync.reload]);
+	gulp.watch('src/routes/**/*.js', ['route-js']);
 	gulp.watch('src/views/**/*.js', ['view-js', browserSync.reload]);
 	gulp.watch('src/views/**/*.vue', ['view-js', browserSync.reload]);
 	gulp.watch('public/**/*.css',  ['css', browserSync.reload]);
-	gulp.watch('src/views/**/*.ejs', ['ejs', browserSync.reload]);
+	gulp.watch('src/views/**/*.ejs', ['view-ejs', browserSync.reload]);
 });
